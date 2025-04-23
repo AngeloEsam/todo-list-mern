@@ -29,10 +29,6 @@ This is a full-stack To-Do List application built using the **MERN** stack (Mong
 
 ---
 
-<pre> ## 📂 Project Structure ```bash todo-auth-app/ │ ├── backend/ │ ├── config/ # Database connection config (db.js) │ ├── controllers/ # Request handlers (authController.js, todoController.js) │ ├── middleware/ # Authentication middleware (auth.js) │ ├── models/ # Mongoose models (User.js, Todo.js) │ ├── routes/ # Route definitions (auth.js, todo.js) │ ├── .env # Environment variables │ └── server.js # Entry point for the backend │ └── frontend/ ├── components/ # Reusable UI components (e.g., Header.jsx) ├── pages/ # Page components (Login.jsx, Register.jsx, Home.jsx) ├── utils/ # Route guards (ProtectedRoute.jsx, PublicRoute.jsx) ├── App.jsx # Main app component └── main.jsx # Frontend entry point ``` </pre>
-
-
-
 ## 🚀 Getting Started
 
 ### 📁 Clone the repository
