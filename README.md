@@ -31,37 +31,24 @@ This is a full-stack To-Do List application built using the **MERN** stack (Mong
 
 ## 📂 Project Structure
 
-todo-auth-app/
+todo-list-mern/
 │
 ├── backend/
-│   ├── config/
-│   │   └── db.js
-│   ├── models/
-│   │   ├── User.js
-│   │   └── Todo.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   └── todo.js
-│   ├── controllers/
-│   │   ├── authController.js
-│   │   └── todoController.js
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── server.js
-│   └── .env
+│   ├── config/                 # Database connection config (db.js)
+│   ├── controllers/           # Request handlers (authController.js, todoController.js)
+│   ├── middleware/            # Authentication middleware (auth.js)
+│   ├── models/                # Mongoose models (User.js, Todo.js)
+│   ├── routes/                # Route definitions (auth.js, todo.js)
+│   ├── .env                   # Environment variables
+│   └── server.js              # Entry point for the backend
 │
-├── frontend/
-│   ├── pages/
-│   │   ├── Login.jsx
-│   │   ├── Register.jsx
-│   │   └── Home.jsx
-│   ├── components/
-│   │   └── Header.jsx
-│   ├── utils/
-│   │   ├── ProtectedRoute.jsx
-│   │   └── PublicRoute.jsx
-│   ├── App.jsx
-│   └── main.jsx
+└── frontend/
+    ├── components/            # Reusable UI components (e.g., Header.jsx)
+    ├── pages/                 # Page components (Login.jsx, Register.jsx, Home.jsx)
+    ├── utils/                 # Route guards (ProtectedRoute.jsx, PublicRoute.jsx)
+    ├── App.jsx                # Main app component
+    └── main.jsx               # Frontend entry point
+
 
 
 ## 🚀 Getting Started
