@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { FaEnvelope, FaLock } from "react-icons/fa";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,9 +12,12 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true); 
+    setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", { email, password });
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password }
+      );
       localStorage.setItem("token", response.data.token);
       setError(null);
       navigate("/");
@@ -25,32 +29,46 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold mb-4">Login</h2>
-        {error && <div className="text-red-500 mb-4">{error}</div>}
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 mb-4 border border-gray-300 rounded"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 mb-4 border border-gray-300 rounded"
-            required
-          />
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br  from-blue-100 to-blue-300">
+      <div className="w-full max-w-md p-8 bg-white shadow-2xl rounded-3xl transition-transform hover:scale-[1.01]">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-6">
+          Welcome Back
+        </h2>
+        {error && (
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4 text-sm border border-red-300">
+            {error}
+          </div>
+        )}
+        <form onSubmit={handleLogin} className="space-y-5">
+          <div className="relative">
+            <FaEnvelope className="absolute top-4 left-3 text-gray-400" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+              required
+            />
+          </div>
+          <div className="relative">
+            <FaLock className="absolute top-4 left-3 text-gray-400" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+              required
+            />
+          </div>
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded transition text-white ${
-              loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+            className={`w-full py-3 font-semibold text-white rounded-lg transition-all duration-300 ${
+              loading
+                ? "bg-indigo-400 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
             {loading ? (
@@ -82,6 +100,15 @@ const LoginPage = () => {
             )}
           </button>
         </form>
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Don’t have an account?{" "}
+          <span
+            className="text-indigo-600 font-semibold hover:underline cursor-pointer"
+            onClick={() => navigate("/register")}
+          >
+            Sign up
+          </span>
+        </p>
       </div>
     </div>
   );
