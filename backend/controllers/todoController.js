@@ -19,20 +19,33 @@ export const addTodo = async (req, res) => {
 
 export const getTodos = async (req, res) => {
   try {
-    const { status, title } = req.query;
+    const { status, title, page = 1, limit = 10 } = req.query;
 
     const query = { user: req.user._id };
     if (status) query.status = status;
     if (title) query.title = { $regex: title, $options: "i" };
 
-    const todos = await Todo.find(query).sort({ dueDate: 1 });
-    res.json(todos);
+    const todos = await Todo.find(query)
+      .sort({ dueDate: 1 })
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
+
+    const total = await Todo.countDocuments(query);
+
+    res.json({
+      todos,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(total / limit),
+      totalItems: total,
+    });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching tasks", error: err.message });
+    res.status(500).json({
+      message: "Error fetching tasks",
+      error: err.message,
+    });
   }
 };
+
 
 export const updateTodo = async (req, res) => {
   try {

@@ -18,16 +18,19 @@ const Home = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [editingTodo, setEditingTodo] = useState(null);
   const [showConfirmId, setShowConfirmId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const token = localStorage.getItem("token");
 
   const fetchTodos = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/todo?title=${search}&status=${filter}`,
+        `http://localhost:5000/api/todo?title=${search}&status=${filter}&page=${page}&limit=10`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTodos(res.data);
+      setTodos(res.data.todos);
+      setTotalPages(res.data.totalPages);
     } catch (err) {
       toast.error(err);
     }
@@ -35,7 +38,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchTodos();
-  }, [search, filter]);
+  }, [search, filter, page]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,10 +48,10 @@ const Home = () => {
     e.preventDefault();
     setIsAdding(true);
     try {
-      const res = await axios.post("http://localhost:5000/api/todo", formData, {
+      await axios.post("http://localhost:5000/api/todo", formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setTodos((prev) => [...prev, res.data]);
+      fetchTodos();
       setFormData({
         title: "",
         description: "",
@@ -67,16 +70,14 @@ const Home = () => {
     if (!editingTodo) return;
     setLoadingId(editingTodo._id);
     try {
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:5000/api/todo/${editingTodo._id}`,
         editingTodo,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setTodos((prev) =>
-        prev.map((t) => (t._id === editingTodo._id ? res.data : t))
-      );
+      fetchTodos();
       setEditingTodo(null);
       toast.success("Task updated!");
     } catch (err) {
@@ -89,7 +90,7 @@ const Home = () => {
   const handleToggle = async (todo) => {
     setLoadingId(todo._id);
     try {
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:5000/api/todo/${todo._id}`,
         {
           ...todo,
@@ -97,7 +98,7 @@ const Home = () => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTodos((prev) => prev.map((t) => (t._id === todo._id ? res.data : t)));
+      fetchTodos();
       toast.success("Status updated");
     } catch (err) {
       toast.error(err);
@@ -112,7 +113,7 @@ const Home = () => {
       await axios.delete(`http://localhost:5000/api/todo/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setTodos((prev) => prev.filter((todo) => todo._id !== id));
+      fetchTodos();
       toast.success("Task deleted");
     } catch (err) {
       toast.error(err);
@@ -132,9 +133,19 @@ const Home = () => {
           className="input"
           placeholder="Search by title..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => {
+            setPage(1);
+            setSearch(e.target.value);
+          }}
         />
-        <select className="input" onChange={(e) => setFilter(e.target.value)}>
+        <select
+          className="input"
+          value={filter}
+          onChange={(e) => {
+            setPage(1);
+            setFilter(e.target.value);
+          }}
+        >
           <option value="">All</option>
           <option value="pending">Pending</option>
           <option value="completed">Completed</option>
@@ -168,7 +179,7 @@ const Home = () => {
         </button>
       </form>
 
-      <ul className="space-y-3">
+      <ul className="space-y-3 mb-6">
         {todos.map((todo) => (
           <li
             key={todo._id}
@@ -200,14 +211,12 @@ const Home = () => {
                   "Toggle"
                 )}
               </button>
-
               <button
                 onClick={() => setEditingTodo(todo)}
                 className="btn-sm bg-yellow-500 text-white"
               >
                 Edit
               </button>
-
               <button
                 onClick={() => setShowConfirmId(todo._id)}
                 className="btn-sm bg-red-500 text-white"
@@ -246,6 +255,26 @@ const Home = () => {
           </li>
         ))}
       </ul>
+
+      <div className="flex justify-center gap-4 items-center">
+        <button
+          className="btn-sm bg-gray-300"
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        <span>
+          Page {page} of {totalPages}
+        </span>
+        <button
+          className="btn-sm bg-gray-300"
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+        >
+          Next
+        </button>
+      </div>
 
       {editingTodo && (
         <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50 z-50">
