@@ -40,9 +40,10 @@ cd todo-list-mern
 
 ##  Run Backend
 cd backend
-ىحة 
+npm install
 npm run dev
 
 ##  Run frontend
 cd frontend
+npm install
 npm run dev
