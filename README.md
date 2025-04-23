@@ -36,3 +36,13 @@ This is a full-stack To-Do List application built using the **MERN** stack (Mong
 ```bash
 git clone https://github.com/AngeloEsam/todo-list-mern.git
 cd todo-list-mern
+--
+
+##  Run Backend
+cd backend
+ىحة 
+npm run dev
+
+##  Run frontend
+cd frontend
+npm run dev
